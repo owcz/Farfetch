@@ -24,7 +24,11 @@ Refer to section **Customization** if you want to learn more about the settings 
 
 ![config](https://u.teknik.io/q4Sg9.png)
 
-In the example file settings.ini you have every available config with it's description commented, for the [custom] > h and for the ascii file, you can use custom colors, specified in `colors.h`, for example `{RED}This is red text. {BOLD}{YELLOW} This is yellow bold text.{RESET} Back to normal.`
+In the example file settings.ini you have every available config with it's description commented, for the [custom] > h and for the ascii file, you can use custom colors, specified in `colors.h`, for example:
+
+```
+{RED}This is red text. {BOLD}{YELLOW} This is yellow bold text.{RESET} Back to normal.
+```
 
 ## TODO
 
