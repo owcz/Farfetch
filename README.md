@@ -20,6 +20,15 @@ Then, if you want another ascii rather than the skeleton example, edit ~/.config
 
 Refer to section **Customization** if you want to learn more about the settings and ascii configurations.
 
+# Usage
+
+The usage is simple, it just needs one argument, the config file absolute or relative path, examples:
+
+```bash
+ff .config/farfetch/settings.ini
+ff /home/$USER/.config/farfetch/settings.ini
+```
+
 # Customization
 
 ![config](https://u.teknik.io/q4Sg9.png)
