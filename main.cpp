@@ -78,7 +78,7 @@ std::string buildAscii(std::string asciiPath, ini *config) {
     std::stringstream rawstream(std::string((std::istreambuf_iterator<char>(in)), std::istreambuf_iterator<char>()).c_str());
     std::string line;
     while(std::getline(rawstream,line,'\n')) {
-        os << std::string(config->offsets.x, ' ') + line + "\n";
+        os << std::string(config->offsets.x, ' ') + RESET + line + RESET + "\n";
     }
     std::string output = parseColors(os.str());
     while (nLines(output) < config->offsets.sy+config->sys_modules.size() && nLines(output) < config->offsets.by+config->bar_modules.size() ) {
@@ -123,7 +123,7 @@ int main(int argc, char const *argv[]) {
     std::string line;
     while(std::getline(sys_bs,line)) {
         moveCursor(0, config.offsets.sx);
-        std::cout << line << std::endl;
+        std::cout << RESET << line << RESET << std::endl;
         top_l = ++l > top_l ? l : top_l;
     }
 
@@ -140,7 +140,7 @@ int main(int argc, char const *argv[]) {
 
     moveCursor(l - config.offsets.hy, config.offsets.hx);
     l = config.offsets.hy;
-    std::cout << buildHeader(&sys, &config) << RESET << std::endl;
+    std::cout << RESET << buildHeader(&sys, &config) << RESET << std::endl;
 
     int toBottom = asc_l > top_l ? asc_l-1 : top_l;
     while(l<=toBottom-3) { // Don't ask me why sub 3
