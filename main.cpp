@@ -4,6 +4,8 @@
 #include <map>
 
 #include "colors.hpp"
+#include "utils.hpp"
+
 #include "ini.hpp"
 #include "sys.hpp"
 
@@ -35,15 +37,6 @@ void moveCursor(int x, int y) {
     xs << "\033[" << x-1 << "A";
     ys << "\033[50D\033[" << y << "C";
     std::cout << (x > 0 ? xs.str() : "") << (y > 0 ? ys.str() : "");
-}
-
-void rplc(std::string *s, const std::string &obj, const std::string &subs) {
-    for(int i = 0; ; i += subs.length()) {
-        i = s->find(obj, i);
-        if(i == std::string::npos) break;
-        s->erase(i, obj.length());
-        s->insert(i, subs);
-    }
 }
 
 std::string mkBar(int percentage, ini *config) {
@@ -87,17 +80,7 @@ std::string buildAscii(std::string asciiPath, ini *config) {
     while(std::getline(rawstream,line,'\n')) {
         os << std::string(config->offsets.x, ' ') + line + "\n";
     }
-    std::string output = os.str();
-    rplc(&output,"{RESET}",RESET);
-    rplc(&output,"{BOLD}",BOLD);
-    rplc(&output,"{DIM}",DIM);
-    rplc(&output,"{RED}",RED);
-    rplc(&output,"{GREEN}",GREEN);
-    rplc(&output,"{YELLOW}",YELLOW);
-    rplc(&output,"{BLUE}",BLUE);
-    rplc(&output,"{MAGENTA}",MAGENTA);
-    rplc(&output,"{GRAY}",GRAY);
-    rplc(&output,"{WHITE}",WHITE);
+    std::string output = parseColors(os.str());
     while (nLines(output) < config->offsets.sy+config->sys_modules.size() && nLines(output) < config->offsets.by+config->bar_modules.size() ) {
         output += '\n';
     }
@@ -106,19 +89,11 @@ std::string buildAscii(std::string asciiPath, ini *config) {
 
 std::string buildHeader(ff_sysinfo *sys, ini *config) {
     std::string header = config->m_header;
-    rplc(&header,"{RESET}",RESET);
-    rplc(&header,"{BOLD}",BOLD);
-    rplc(&header,"{DIM}",DIM);
-    rplc(&header,"{RED}",RED);
-    rplc(&header,"{GREEN}",GREEN);
-    rplc(&header,"{YELLOW}",YELLOW);
-    rplc(&header,"{BLUE}",BLUE);
-    rplc(&header,"{MAGENTA}",MAGENTA);
     rplc(&header,"{CPU}",sys->modules["CPU"]);
     rplc(&header,"{HOSTNAME}",sys->modules["Host"]);
     rplc(&header,"{KERNEL}",sys->modules["Kernel"]);
     rplc(&header,"{PACKAGES}",sys->modules["Packages"]);
-    return header;
+    return parseColors(header);
 }
 
 int main(int argc, char const *argv[]) {
