@@ -1,7 +1,7 @@
 #ifndef __FF_COLORS__
 #define __FF_COLORS__
 
-#define TEXT_TITLE "\033[1m"
+#define TEXT_TITLE "\033[1;37m"
 #define TEXT_NORMAL "\033[0m"
 #define BAR_USED "\033[47m"
 #define BAR_FREE "\033[100m"
