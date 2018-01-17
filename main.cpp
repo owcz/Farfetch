@@ -46,9 +46,9 @@ void rplc(std::string *s, const std::string &obj, const std::string &subs) {
     }
 }
 
-std::string mkBar(int barWidth, int percentage) {
-    int used = barWidth * percentage / 100;
-    return std::string(BAR_USED)+std::string(used,' ')+BAR_FREE+std::string(barWidth-used,' ')+RESET;
+std::string mkBar(int percentage, ini *config) {
+    int used = config->bars.width * percentage / 100;
+    return std::string(config->colors["used"])+std::string(used,' ')+config->colors["free"]+std::string(config->bars.width-used,' ')+RESET;
 }
 
 std::string buildBars(ff_sysinfo *sys, ini *config) {
@@ -57,7 +57,7 @@ std::string buildBars(ff_sysinfo *sys, ini *config) {
     std::string s(config->palette_spaces, ' ');
     for( std::string bar : config->bar_modules ) {
         if (sys->bars.find(bar) != sys->bars.end()) {
-            body << n + mkBar(config->bars.width, sys->bars[bar]) + RESET TEXT_NORMAL + " " + config->bars.label[bar];
+            body << n + mkBar(sys->bars[bar], config) + RESET + config->colors["normal"] + " " + config->bars.label[bar];
             n = "\n";
         } else if (bar == "palette") {
             body << n+"\033[40m"+s+"\033[41m"+s+"\033[42m"+s+"\033[43m"+s+"\033[44m"+s+"\033[45m"+s+"\033[46m"+s+"\033[47m"+RESET;
@@ -72,7 +72,7 @@ std::string buildSys(ff_sysinfo *sys, ini *config) {
     std::string n = "";
     for( std::string m : config->sys_modules ) {
         if (sys->modules.find(m) != sys->modules.end()) {
-            body << n + TEXT_TITLE + m + ": " + TEXT_NORMAL + sys->modules[m] + RESET;
+            body << n + config->colors["title"] + m + ": " + RESET + config->colors["normal"] + sys->modules[m] + RESET;
             n = "\n";
         }
     }
@@ -96,6 +96,8 @@ std::string buildAscii(std::string asciiPath, ini *config) {
     rplc(&output,"{YELLOW}",YELLOW);
     rplc(&output,"{BLUE}",BLUE);
     rplc(&output,"{MAGENTA}",MAGENTA);
+    rplc(&output,"{GRAY}",GRAY);
+    rplc(&output,"{WHITE}",WHITE);
     while (nLines(output) < config->offsets.sy+config->sys_modules.size() && nLines(output) < config->offsets.by+config->bar_modules.size() ) {
         output += '\n';
     }
