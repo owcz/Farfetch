@@ -57,7 +57,7 @@ std::string buildBars(ff_sysinfo *sys, ini *config) {
     std::string s(config->palette_spaces, ' ');
     for( std::string bar : config->bar_modules ) {
         if (sys->bars.find(bar) != sys->bars.end()) {
-            body << n + mkBar(config->bars.width, sys->bars[bar]) + RESET TEXT_NORMAL + " " + config->bars.disk_label;
+            body << n + mkBar(config->bars.width, sys->bars[bar]) + RESET TEXT_NORMAL + " " + config->bars.label[bar];
             n = "\n";
         } else if (bar == "palette") {
             body << n+"\033[40m"+s+"\033[41m"+s+"\033[42m"+s+"\033[43m"+s+"\033[44m"+s+"\033[45m"+s+"\033[46m"+s+"\033[47m"+RESET;
@@ -96,8 +96,6 @@ std::string buildAscii(std::string asciiPath, ini *config) {
     rplc(&output,"{YELLOW}",YELLOW);
     rplc(&output,"{BLUE}",BLUE);
     rplc(&output,"{MAGENTA}",MAGENTA);
-    rplc(&output,"{CYAN}",CYAN);
-    rplc(&output,"{WHITE}",WHITE);
     while (nLines(output) < config->offsets.sy+config->sys_modules.size() && nLines(output) < config->offsets.by+config->bar_modules.size() ) {
         output += '\n';
     }
@@ -114,8 +112,6 @@ std::string buildHeader(ff_sysinfo *sys, ini *config) {
     rplc(&header,"{YELLOW}",YELLOW);
     rplc(&header,"{BLUE}",BLUE);
     rplc(&header,"{MAGENTA}",MAGENTA);
-    rplc(&header,"{CYAN}",CYAN);
-    rplc(&header,"{WHITE}",WHITE);
     rplc(&header,"{CPU}",sys->modules["CPU"]);
     rplc(&header,"{HOSTNAME}",sys->modules["Host"]);
     rplc(&header,"{KERNEL}",sys->modules["Kernel"]);
