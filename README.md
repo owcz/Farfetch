@@ -46,6 +46,7 @@ In the example file settings.ini you have every available config with it's descr
 * Make more system info modules.
 * Improve the cache file to hold different things.
 * Make the bar label inside the actual bar, that would look cool.
+* Text and bar colors inside settings file.
 
 <div align="center">
 	<i>Pokémon, Pokémon character names, Nintendo 3DS, Nintendo DS, Wii, Wii U, and Wiiware are trademarks of Nintendo.</i>
