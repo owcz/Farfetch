@@ -1,12 +1,15 @@
 #include <sys/utsname.h>
 #include <sys/statvfs.h>
+#include <sys/sysinfo.h>//ram bar and uptime module WIP
 #include <sys/stat.h>
+#include <time.h>
 
 
-struct sysinfo {
+struct ff_sysinfo {
     private:
         struct utsname un;
         struct statvfs dsk;
+        struct sysinfo sinf;
         void rplc(std::string *s, const std::string &obj, const std::string &subs) {
             for(int i = 0; ; i += subs.length()) {
                 i = s->find(obj, i);
@@ -19,6 +22,14 @@ struct sysinfo {
             while (str->find("  ") != std::string::npos) {
                 rplc(str, "  ", " ");
             }
+        }
+        std::string parseSeconds(long seconds) {
+            time_t sec = (int)seconds;
+            tm *ts = gmtime(&sec);
+            std::string t_parsed = (ts->tm_yday > 0 ? std::to_string(ts->tm_yday) + (ts->tm_yday == 1 ? " day, " : " days, ") : "")\
+                                    + (ts->tm_hour > 0 ? std::to_string(ts->tm_hour) + (ts->tm_hour == 1 ? " hour, " : " hours, ") : "")\
+                                    + std::to_string(ts->tm_min) + " mins " + "and " + std::to_string(ts->tm_sec) + " secs";
+            return t_parsed;
         }
         void mfreq(std::string *cpustr) {
             std::ifstream mfreqfile("/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq");
@@ -62,14 +73,15 @@ struct sysinfo {
             {"Kernel",      "err"},
             {"Host",        "err"},
             {"CPU",         "err"},
-            {"Packages",    "err"}
+            {"Packages",    "err"},
+            {"Uptime",      "err"}
         };
 
         std::map<std::string, int> bars = {
             {"disk",        0}
         };
 
-        sysinfo(ini *config) {
+        ff_sysinfo(ini *config) {
             std::string cpu_module = _getAttribFromRaw("/proc/cpuinfo", "model name", ':');
             rplc(&cpu_module, "(R)", "");
             rplc(&cpu_module, "(r)", "");
@@ -86,6 +98,9 @@ struct sysinfo {
             this->modules["Host"] = this->un.nodename;
             this->modules["CPU"] = cpu_module;
             this->modules["Packages"] = npackages(config->modules["pkgcache"]);
+
+            sysinfo(&sinf);
+            this->modules["Uptime"] = parseSeconds(sinf.uptime);
 
             statvfs(config->bars.disk.c_str(), &dsk);
             this->disk_used, bars["disk"] = 100 - (unsigned long)this->dsk.f_bavail * 100 / (unsigned long)this->dsk.f_blocks;

@@ -51,7 +51,7 @@ std::string mkBar(int barWidth, int percentage) {
     return std::string(BAR_USED)+std::string(used,' ')+BAR_FREE+std::string(barWidth-used,' ')+RESET;
 }
 
-std::string buildBars(sysinfo *sys, ini *config) {
+std::string buildBars(ff_sysinfo *sys, ini *config) {
     std::stringstream body;
     std::string n = "";
     std::string s(config->palette_spaces, ' ');
@@ -67,7 +67,7 @@ std::string buildBars(sysinfo *sys, ini *config) {
     return body.str();
 }
 
-std::string buildSys(sysinfo *sys, ini *config) {
+std::string buildSys(ff_sysinfo *sys, ini *config) {
     std::stringstream body;
     std::string n = "";
     for( std::string m : config->sys_modules ) {
@@ -102,7 +102,7 @@ std::string buildAscii(std::string asciiPath, ini *config) {
     return output;
 }
 
-std::string buildHeader(sysinfo *sys, ini *config) {
+std::string buildHeader(ff_sysinfo *sys, ini *config) {
     std::string header = config->m_header;
     rplc(&header,"{RESET}",RESET);
     rplc(&header,"{BOLD}",BOLD);
@@ -127,7 +127,7 @@ int main(int argc, char const *argv[]) {
     ini config(&configPath);
     std::string asciiPath = config.m_asciiart[0] == '/' ? config.m_asciiart : configPath.substr(0,configPath.find_last_of('/')+1)+config.m_asciiart;
 
-    sysinfo sys(&config);
+    ff_sysinfo sys(&config);
 
     std::string sys_b = buildSys(&sys, &config);
     std::string asc_b = config.m_asciiart.empty() || !config.modules["ascii"] ? "" : buildAscii(asciiPath, &config);
