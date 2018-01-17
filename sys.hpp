@@ -67,7 +67,6 @@ struct ff_sysinfo {
         }
 
     public:
-        int disk_used;
 
         std::map<const std::string, std::string> modules = {
             {"Kernel",      "err"},
@@ -78,7 +77,8 @@ struct ff_sysinfo {
         };
 
         std::map<std::string, int> bars = {
-            {"disk",        0}
+            {"disk",        0},
+            {"ram",         0}
         };
 
         ff_sysinfo(ini *config) {
@@ -103,6 +103,8 @@ struct ff_sysinfo {
             this->modules["Uptime"] = parseSeconds(sinf.uptime);
 
             statvfs(config->bars.disk.c_str(), &dsk);
-            this->disk_used, bars["disk"] = 100 - (unsigned long)this->dsk.f_bavail * 100 / (unsigned long)this->dsk.f_blocks;
+            this->bars["disk"] = 100 - (unsigned long)this->dsk.f_bavail * 100 / (unsigned long)this->dsk.f_blocks;
+            this->bars["ram"] = 100 - (((uint64_t) sinf.freeram * sinf.mem_unit)/1024)\
+                                     * 100 / ((((uint64_t) sinf.totalram * sinf.mem_unit)/1024 + ((uint64_t) sinf.totalswap * sinf.mem_unit)/1024));
         }
 };

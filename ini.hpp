@@ -82,7 +82,10 @@ class ini {
         struct bar {
             int width = 28;
             std::string disk = "/home";
-            std::string disk_label = "/home";
+            std::map<std::string, std::string> label = {
+                {"disk",    "/home"},
+                {"ram",     "RAM"}
+            };
         } bars;
 
         struct offset {
@@ -92,12 +95,12 @@ class ini {
             int sx = 1;
             int sy = 1;
             int bx = 1;
-            int by = 5;
+            int by = 6;
         } offsets;
 
         std::map<const char*, bool> modules = {
             {"ascii",           true},
-            {"bars",        true},
+            {"bars",            true},
             {"pkgcache",        false}
         };
 
@@ -134,7 +137,12 @@ class ini {
                     }
                     _getValueFromRaw("bars","disk_label",&buffer);
                     if (!buffer.empty()) {
-                        this->bars.disk_label = buffer;
+                        this->bars.label["disk"] = buffer;
+                    }
+                    buffer.clear();
+                    _getValueFromRaw("bars","ram_label",&buffer);
+                    if (!buffer.empty()) {
+                        this->bars.label["ram"] = buffer;
                     }
                     buffer.clear();
                     _getValueFromRaw("bars","order",&buffer);

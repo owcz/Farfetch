@@ -57,7 +57,7 @@ std::string buildBars(ff_sysinfo *sys, ini *config) {
     std::string s(config->palette_spaces, ' ');
     for( std::string bar : config->bar_modules ) {
         if (sys->bars.find(bar) != sys->bars.end()) {
-            body << n + mkBar(config->bars.width, sys->bars[bar]) + RESET TEXT_NORMAL + " " + config->bars.disk_label;
+            body << n + mkBar(config->bars.width, sys->bars[bar]) + RESET TEXT_NORMAL + " " + config->bars.label[bar];
             n = "\n";
         } else if (bar == "palette") {
             body << n+"\033[40m"+s+"\033[41m"+s+"\033[42m"+s+"\033[43m"+s+"\033[44m"+s+"\033[45m"+s+"\033[46m"+s+"\033[47m"+RESET;
