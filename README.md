@@ -39,6 +39,18 @@ In the example file settings.ini you have every available config with it's descr
 {RED}This is red text. {BOLD}{YELLOW} This is yellow bold text.{RESET} Back to normal.
 ```
 
+Current list of working modules:
+
+```
+Kernle,Host,CPU,Packages,Uptime
+```
+
+Current list of working bars:
+
+```
+disk,ram,palette
+```
+
 ## TODO
 
 * Improve **Customization** section.
