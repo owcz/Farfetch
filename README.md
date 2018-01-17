@@ -42,7 +42,7 @@ In the example file settings.ini you have every available config with it's descr
 Current list of working modules:
 
 ```
-Kernle,Host,CPU,Packages,Uptime
+Kernel,Host,CPU,Packages,Uptime
 ```
 
 Current list of working bars:
