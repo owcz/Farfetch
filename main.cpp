@@ -11,8 +11,8 @@ std::string getPath() {
     char result[ PATH_MAX ];
     ssize_t count = readlink( "/proc/self/exe", result, PATH_MAX );
     std::string res = std::string(result);
-    size_t lastdir = res.find_last_of("/"); 
-    std::string dir = res.substr(0, lastdir+1); 
+    size_t lastdir = res.find_last_of("/");
+    std::string dir = res.substr(0, lastdir+1);
     return dir;
 }
 
@@ -149,7 +149,7 @@ int main(int argc, char const *argv[]) {
         std::cout << line << std::endl;
         top_l = ++l > top_l ? l : top_l;
     }
-    
+
     moveCursor(l - config.offsets.by, config.offsets.bx);
     l = config.offsets.by;
 
