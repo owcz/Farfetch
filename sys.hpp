@@ -5,7 +5,6 @@
 #include <algorithm>
 #include <dirent.h>
 
-#define PCI_IDS "/usr/share/misc/pci.ids"
 #define PCI_CLASS_DISPLAY "0x030000"
 
 struct ff_sysinfo {
@@ -64,7 +63,7 @@ struct ff_sysinfo {
         std::string getDevice(std::string hexVendor, std::string hexDevice) {
             /* TODO: Either cache or use a better search algorithm */
             std::string vendorName;
-            std::ifstream devlist(PCI_IDS);
+            std::ifstream devlist(this->pci_ids);
             std::string line;
             while (std::getline(devlist,line)) {
                 if ((char)line[0] != '#' && (char)line[0] != '\t'){
@@ -124,7 +123,22 @@ struct ff_sysinfo {
             {"ram",         0}
         };
 
+        std::string pci_ids = "/usr/share/misc/pci.ids";
+
+        std::vector<const char*> pci_ids_v = {
+            "/usr/share/hwdata/pci.ids",
+            "/usr/share/misc/pci.ids"
+        };
+
         ff_sysinfo(ini *config) {
+
+            for (const char* pif : pci_ids_v) {
+                std::ifstream pif_test(pif);
+                if (pif_test.good()) {
+                    this->pci_ids = pif;
+                    break;
+                }
+            }
 
             std::string cpu_module = getAttribFromRaw("/proc/cpuinfo", "model name", ':');
             rplc(&cpu_module, "(R)", "");
