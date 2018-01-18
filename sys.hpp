@@ -127,7 +127,9 @@ struct ff_sysinfo {
 
         std::vector<const char*> pci_ids_v = {
             "/usr/share/hwdata/pci.ids",
-            "/usr/share/misc/pci.ids"
+            "/usr/share/misc/pci.ids",
+            "/var/lib/pciutils/pci.ids",
+            "/usr/share/pci.ids"
         };
 
         ff_sysinfo(ini *config) {
