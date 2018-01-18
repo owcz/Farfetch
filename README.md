@@ -10,8 +10,9 @@ To compile the binary, use `make`, after that, the binary (located in build/ff) 
 
 ```bash
 make
-mkdir -p ~/.config/farfetch/ ~/bin
-cp build/settings.ini build/skeleton.ascii ~/.config/farfetch/
+mkdir -p ~/.config/farfetch/ascii ~/bin
+cp build/settings.ini ~/.config/farfetch/
+cp build/ascii/* ~/.config/farfetch/ascii
 cp build/ff ~/bin/
 echo 'alias ff="~/bin/ff /home/$USER/.config/farfetch/settings.ini"' >> ~/.bashrc
 ```
