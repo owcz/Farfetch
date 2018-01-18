@@ -106,6 +106,18 @@ struct ff_sysinfo {
             closedir(dir);
             return devices;
         }
+        unsigned long getCachedRam(int mem_unit) {
+            std::ifstream meminfo("/proc/meminfo");
+            std::string line;
+            while (std::getline(meminfo, line)) {
+                if (line.substr(0,7) == "Cached:") {
+                    rplc(&line, "Cached:", "");
+                    rplc(&line, "kB", "");
+                    rplc(&line, " ", "");
+                    return (unsigned long)std::stoi(line) * 1024;
+                }
+            }
+        }
 
     public:
 
@@ -115,7 +127,8 @@ struct ff_sysinfo {
             {"CPU",         "err"},
             {"Packages",    "err"},
             {"Uptime",      "err"},
-            {"GPU",         "err"}
+            {"GPU",         "err"},
+            {"Processes",   "err"}
         };
 
         std::map<std::string, int> bars = {
@@ -123,7 +136,7 @@ struct ff_sysinfo {
             {"ram",         0}
         };
 
-        std::string pci_ids = "/usr/share/misc/pci.ids";
+        std::string pci_ids;
 
         std::vector<const char*> pci_ids_v = {
             "/usr/share/hwdata/pci.ids",
@@ -134,10 +147,13 @@ struct ff_sysinfo {
 
         ff_sysinfo(ini *config) {
 
+            bool found_pci_ids = false;
+
             for (const char* pif : pci_ids_v) {
                 std::ifstream pif_test(pif);
                 if (pif_test.good()) {
                     this->pci_ids = pif;
+                    found_pci_ids = true;
                     break;
                 }
             }
@@ -153,7 +169,7 @@ struct ff_sysinfo {
             mfreq(&cpu_module);
             trim(&cpu_module);
 
-            std::vector<std::string> v_gpu = std::find(config->sys_modules.begin(), config->sys_modules.end(), "GPU") != config->sys_modules.end() ?\
+            std::vector<std::string> v_gpu = std::find(config->sys_modules.begin(), config->sys_modules.end(), "GPU") != config->sys_modules.end() && found_pci_ids ?\
                                              (std::vector<std::string>)getDisplayDevices() : (std::vector<std::string>){"err"};
 
             uname(&un);
@@ -165,10 +181,11 @@ struct ff_sysinfo {
 
             sysinfo(&sinf);
             this->modules["Uptime"] = parseSeconds(sinf.uptime);
+            this->modules["Processes"] = std::to_string((int)sinf.procs);
 
             statvfs(config->bars.disk.c_str(), &dsk);
             this->bars["disk"] = 100 - (unsigned long)this->dsk.f_bavail * 100 / (unsigned long)this->dsk.f_blocks;
-            this->bars["ram"] = 100 - (((uint64_t) sinf.freeram * sinf.mem_unit)/1024)\
-                                     * 100 / ((((uint64_t) sinf.totalram * sinf.mem_unit)/1024 + ((uint64_t) sinf.totalswap * sinf.mem_unit)/1024));
+            unsigned long cachedram = getCachedRam(sinf.mem_unit);
+            this->bars["ram"] = 100 - (uint64_t)(sinf.freeram+sinf.bufferram+cachedram) * 100 / (uint64_t)(sinf.totalram + sinf.totalswap);
         }
 };
