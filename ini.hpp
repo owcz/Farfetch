@@ -57,7 +57,7 @@ class ini {
             return output;
         }
 
-        void _getValueFromRaw(const char* block, const char* value, std::string *holder) {
+        void split(const char* block, const char* value, std::string *holder) {
             std::stringstream rawstream(this->rawconf.c_str());
             std::stringstream block2e;
             block2e << rawstream.str().substr(rawstream.str().find(std::string(std::string("[")+std::string(block)+std::string("]")))+1);
@@ -132,112 +132,112 @@ class ini {
 
                     std::string buffer;
 
-                    _getValueFromRaw("bars","width",&buffer);
+                    split("bars","width",&buffer);
                     if (!buffer.empty() && _isInteger(buffer)) {
                         this->bars.width = std::stoi(buffer);
                     }
                     buffer.clear();
-                    _getValueFromRaw("bars","disk",&buffer);
+                    split("bars","disk",&buffer);
                     if (!buffer.empty()) {
                         this->bars.disk = buffer;
                     }
-                    _getValueFromRaw("bars","disk_label",&buffer);
+                    split("bars","disk_label",&buffer);
                     if (!buffer.empty()) {
                         this->bars.label["disk"] = buffer;
                     }
                     buffer.clear();
-                    _getValueFromRaw("bars","ram_label",&buffer);
+                    split("bars","ram_label",&buffer);
                     if (!buffer.empty()) {
                         this->bars.label["ram"] = buffer;
                     }
                     buffer.clear();
-                    _getValueFromRaw("bars","order",&buffer);
+                    split("bars","order",&buffer);
                     setSysLayout(!buffer.empty() ? buffer : std::string("disk,palette"), ',', &this->bar_modules);
                     buffer.clear();
-                    _getValueFromRaw("bars","pw",&buffer);
+                    split("bars","pw",&buffer);
                     if (!buffer.empty() && _isInteger(buffer)) {
                         this->palette_spaces = std::stoi(buffer);
                     }
                     buffer.clear();
-                    _getValueFromRaw("offsets","x",&buffer);
+                    split("offsets","x",&buffer);
                     if (!buffer.empty() && _isInteger(buffer)) {
                         this->offsets.x = std::stoi(buffer);
                     }
                     buffer.clear();
-                    _getValueFromRaw("offsets","sx",&buffer);
+                    split("offsets","sx",&buffer);
                     if (!buffer.empty() && _isInteger(buffer)) {
                         this->offsets.sx = std::stoi(buffer);
                     }
                     buffer.clear();
-                    _getValueFromRaw("offsets","sy",&buffer);
+                    split("offsets","sy",&buffer);
                     if (!buffer.empty() && _isInteger(buffer)) {
                         this->offsets.sy = std::stoi(buffer);
                     }
                     buffer.clear();
-                    _getValueFromRaw("offsets","by",&buffer);
+                    split("offsets","by",&buffer);
                     if (!buffer.empty() && _isInteger(buffer)) {
                         this->offsets.by = std::stoi(buffer);
                     }
                     buffer.clear();
-                    _getValueFromRaw("offsets","bx",&buffer);
+                    split("offsets","bx",&buffer);
                     if (!buffer.empty() && _isInteger(buffer)) {
                         this->offsets.bx = std::stoi(buffer);
                     }
                     buffer.clear();
-                    _getValueFromRaw("offsets","hx",&buffer);
+                    split("offsets","hx",&buffer);
                     if (!buffer.empty() && _isInteger(buffer)) {
                         this->offsets.hx = std::stoi(buffer);
                     }
                     buffer.clear();
-                    _getValueFromRaw("offsets","hy",&buffer);
+                    split("offsets","hy",&buffer);
                     if (!buffer.empty() && _isInteger(buffer)) {
                         this->offsets.hy = std::stoi(buffer);
                     }
                     buffer.clear();
-                    _getValueFromRaw("modules","ascii",&buffer);
+                    split("modules","ascii",&buffer);
                     if (!buffer.empty()) {
                         std::istringstream(buffer) >> std::boolalpha >> this->modules["ascii"];
                     }
                     buffer.clear();
-                    _getValueFromRaw("modules","bars",&buffer);
+                    split("modules","bars",&buffer);
                     if (!buffer.empty()) {
                         std::istringstream(buffer) >> std::boolalpha >> this->modules["bars"];
                     }
                     buffer.clear();
-                    _getValueFromRaw("modules","pkgcache",&buffer);
+                    split("modules","pkgcache",&buffer);
                     if (!buffer.empty()) {
                         std::istringstream(buffer) >> std::boolalpha >> this->modules["pkgcache"];
                     }
                     buffer.clear();
-                    _getValueFromRaw("modules","order",&buffer);
+                    split("modules","order",&buffer);
                     setSysLayout(!buffer.empty() ? buffer : std::string("Host,Kernel,CPU"), ',', &this->sys_modules);
                     buffer.clear();
-                    _getValueFromRaw("custom","art",&buffer);
+                    split("custom","art",&buffer);
                     if (!buffer.empty()) {
                         this->m_asciiart = buffer;
                     }
                     buffer.clear();
-                    _getValueFromRaw("custom","h",&buffer);
+                    split("custom","h",&buffer);
                     if (!buffer.empty()) {
                         this->m_header = buffer;
                     }
                     buffer.clear();
-                    _getValueFromRaw("custom","text_title",&buffer);
+                    split("custom","text_title",&buffer);
                     if (!buffer.empty()) {
                         this->colors["title"] = buffer;
                     }
                     buffer.clear();
-                    _getValueFromRaw("custom","text_normal",&buffer);
+                    split("custom","text_normal",&buffer);
                     if (!buffer.empty()) {
                         this->colors["normal"] = buffer;
                     }
                     buffer.clear();
-                    _getValueFromRaw("custom","bar_used",&buffer);
+                    split("custom","bar_used",&buffer);
                     if (!buffer.empty()) {
                         this->colors["used"] = buffer;
                     }
                     buffer.clear();
-                    _getValueFromRaw("custom","bar_free",&buffer);
+                    split("custom","bar_free",&buffer);
                     if (!buffer.empty()) {
                         this->colors["free"] = buffer;
                     }

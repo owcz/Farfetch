@@ -60,11 +60,10 @@ disk,ram,palette
 
 * Improve **Customization** section.
 * make install.
-* Make more system info modules.
+* **WIP** ~~Make more system info modules.~~
 * Improve the cache file to hold different things.
 * Make the bar label inside the actual bar, that would look cool.
-* Text and bar colors inside settings file.
-* Move rplc and other functions to another header.
+* **WIP** ~~Move rplc and other functions to another header.~~
 
 <div align="center">
 	<i>Pokémon, Pokémon character names, Nintendo 3DS, Nintendo DS, Wii, Wii U, and Wiiware are trademarks of Nintendo.</i>
