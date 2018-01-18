@@ -33,6 +33,8 @@ ff /home/$USER/.config/farfetch/settings.ini
 
 ![config](https://u.teknik.io/q4Sg9.png)
 
+[*For more detailed information, click this link to check the wiki*](https://github.com/Capuno/Farfetch/wiki)
+
 In the example file settings.ini you have every available config with it's description commented, for the [custom] > h and for the ascii file, you can use custom colors, specified in `colors.h`, for example:
 
 ```
