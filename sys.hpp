@@ -2,6 +2,7 @@
 #include <sys/statvfs.h>
 #include <sys/sysinfo.h>
 #include <sys/stat.h>
+#include <algorithm>
 #include <dirent.h>
 #include <time.h>
 
@@ -136,7 +137,8 @@ struct ff_sysinfo {
             mfreq(&cpu_module);
             trim(&cpu_module);
 
-            std::vector<std::string> v_gpu = (std::vector<std::string>)getDisplayDevices();
+            std::vector<std::string> v_gpu = std::find(config->sys_modules.begin(), config->sys_modules.end(), "GPU") != config->sys_modules.end() ?\
+                                             (std::vector<std::string>)getDisplayDevices() : (std::vector<std::string>){"err"};
 
             uname(&un);
             this->modules["Kernel"] = this->un.release;
