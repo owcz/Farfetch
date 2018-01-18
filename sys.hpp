@@ -4,7 +4,6 @@
 #include <sys/stat.h>
 #include <algorithm>
 #include <dirent.h>
-#include <time.h>
 
 #define PCI_IDS "/usr/share/misc/pci.ids"
 #define PCI_CLASS_DISPLAY "0x030000"
@@ -20,11 +19,12 @@ struct ff_sysinfo {
             }
         }
         std::string parseSeconds(long seconds) {
-            time_t sec = (int)seconds;
-            tm *ts = gmtime(&sec);
-            std::string t_parsed = (ts->tm_yday > 0 ? std::to_string(ts->tm_yday) + (ts->tm_yday == 1 ? " day, " : " days, ") : "")\
-                                    + (ts->tm_hour > 0 ? std::to_string(ts->tm_hour) + (ts->tm_hour == 1 ? " hour and " : " hours and ") : "")\
-                                    + std::to_string(ts->tm_min) + " mins";
+            int days = seconds / 86400;
+            int hours = (seconds % 86400) / 3600;
+            int minutes = ((seconds % 86400) % 3600) / 60;
+            std::string t_parsed = (days > 0 ? std::to_string(days) + (days == 1 ? " day, " : " days, ") : "")\
+                                    + (hours > 0 ? std::to_string(hours) + (hours == 1 ? " hour and " : " hours and ") : "")\
+                                    + std::to_string(minutes) + " mins";
             return t_parsed;
         }
         void mfreq(std::string *cpustr) {
