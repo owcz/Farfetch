@@ -1,4 +1,5 @@
 #pragma once
+#define PCI_IDS "/usr/share/misc/pci.ids"
 
 void rplc(std::string *s, const std::string &obj, const std::string &subs) {
     for(int i = 0; ; i += subs.length()) {
@@ -6,6 +7,29 @@ void rplc(std::string *s, const std::string &obj, const std::string &subs) {
         if(i == std::string::npos) break;
         s->erase(i, obj.length());
         s->insert(i, subs);
+    }
+}
+
+std::string getDevice(std::string hexVendor, std::string hexDevice) {
+    std::string vendorName;
+    std::ifstream devlist(PCI_IDS);
+    std::string line;
+    std::cout << "test" << std::endl;
+    while (std::getline(devlist,line)) {
+        if ((char)line[0] != '#' && (char)line[0] != '\t'){
+            if (line.substr(0, 4) == hexVendor){
+                vendorName = " " + line.substr(line.find("  ")+2);
+                while(std::getline(devlist,line)) {
+                    if ((char)line[0] == '\t') {
+                        if (line.substr(line.find_last_of('\t')+1, 4) == hexDevice) {
+                            return line.substr(line.find("  ")+2);
+                        }
+                    } else if ((char)line[0] != '#') {
+                        return "Unrecognized" + vendorName;
+                    }
+                }
+            }
+        }
     }
 }
 

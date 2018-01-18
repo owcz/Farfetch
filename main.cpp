@@ -1,6 +1,7 @@
 #include <iostream>
 #include <unistd.h>
 #include <limits.h>
+#include <fstream>
 #include <map>
 
 #include "colors.hpp"

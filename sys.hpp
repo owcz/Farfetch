@@ -19,8 +19,8 @@ struct ff_sysinfo {
             time_t sec = (int)seconds;
             tm *ts = gmtime(&sec);
             std::string t_parsed = (ts->tm_yday > 0 ? std::to_string(ts->tm_yday) + (ts->tm_yday == 1 ? " day, " : " days, ") : "")\
-                                    + (ts->tm_hour > 0 ? std::to_string(ts->tm_hour) + (ts->tm_hour == 1 ? " hour, " : " hours, ") : "")\
-                                    + std::to_string(ts->tm_min) + " mins " + "and " + std::to_string(ts->tm_sec) + " secs";
+                                    + (ts->tm_hour > 0 ? std::to_string(ts->tm_hour) + (ts->tm_hour == 1 ? " hour and " : " hours and ") : "")\
+                                    + std::to_string(ts->tm_min) + " mins.";
             return t_parsed;
         }
         void mfreq(std::string *cpustr) {

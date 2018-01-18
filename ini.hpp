@@ -3,11 +3,10 @@
  *  By Capuno, GPLv3
  *  #include <map> // required
  *  #include <fstream> // required
+ *  #include <fstream> // required
  */
 
 #include <string>
-
-#include <fstream>
 #include <sstream>
 
 #include <vector>
