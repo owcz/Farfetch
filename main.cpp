@@ -91,6 +91,8 @@ std::string buildAscii(std::string asciiPath, ini *config) {
 std::string buildHeader(ff_sysinfo *sys, ini *config) {
     std::string header = config->m_header;
     rplc(&header,"{CPU}",sys->modules["CPU"]);
+    rplc(&header,"{GPU}",sys->modules["GPU"]);
+    rplc(&header,"{UPTIME}",sys->modules["Uptime"]);
     rplc(&header,"{HOSTNAME}",sys->modules["Host"]);
     rplc(&header,"{KERNEL}",sys->modules["Kernel"]);
     rplc(&header,"{PACKAGES}",sys->modules["Packages"]);

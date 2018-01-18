@@ -2,8 +2,11 @@
 #include <sys/statvfs.h>
 #include <sys/sysinfo.h>
 #include <sys/stat.h>
+#include <dirent.h>
 #include <time.h>
 
+#define PCI_IDS "/usr/share/misc/pci.ids"
+#define PCI_CLASS_DISPLAY "0x030000"
 
 struct ff_sysinfo {
     private:
@@ -20,7 +23,7 @@ struct ff_sysinfo {
             tm *ts = gmtime(&sec);
             std::string t_parsed = (ts->tm_yday > 0 ? std::to_string(ts->tm_yday) + (ts->tm_yday == 1 ? " day, " : " days, ") : "")\
                                     + (ts->tm_hour > 0 ? std::to_string(ts->tm_hour) + (ts->tm_hour == 1 ? " hour and " : " hours and ") : "")\
-                                    + std::to_string(ts->tm_min) + " mins.";
+                                    + std::to_string(ts->tm_min) + " mins";
             return t_parsed;
         }
         void mfreq(std::string *cpustr) {
@@ -48,7 +51,7 @@ struct ff_sysinfo {
             getline(nr, line);
             return line;
         }
-        std::string _getAttribFromRaw(const char* file, std::string attrib, char sep) {
+        std::string getAttribFromRaw(const char* file, std::string attrib, char sep) {
             std::ifstream raw(file);
             std::string line;
             while (std::getline(raw,line)) {
@@ -56,6 +59,52 @@ struct ff_sysinfo {
                     return line.substr(line.find(sep)+2);
                 }
             }
+        }
+        std::string getDevice(std::string hexVendor, std::string hexDevice) {
+            /* TODO: Either cache or use a better search algorithm */
+            std::string vendorName;
+            std::ifstream devlist(PCI_IDS);
+            std::string line;
+            while (std::getline(devlist,line)) {
+                if ((char)line[0] != '#' && (char)line[0] != '\t'){
+                    if (line.substr(0, 4) == hexVendor){
+                        vendorName = " " + line.substr(line.find("  ")+2);
+                        while(std::getline(devlist,line)) {
+                            if ((char)line[0] == '\t') {
+                                if (line.substr(line.find_last_of('\t')+1, 4) == hexDevice) {
+                                    return line.substr(line.find("  ")+2);
+                                }
+                            } else if ((char)line[0] != '#') {
+                                return "Unrecognized" + vendorName;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        std::vector<std::string> getDisplayDevices() {
+            std::vector<std::string> devices;
+            DIR* dir = opendir("/sys/bus/pci/devices");
+            struct dirent *ent;
+            while (ent = readdir(dir)) {
+                if (ent->d_name[0] != '.'){
+                    std::string device_path = (std::string)"/sys/bus/pci/devices/"+ent->d_name+"/";
+                    std::ifstream device_class((device_path+"class").c_str());
+                    std::string c;
+                    std::getline(device_class, c);
+                    if (c == PCI_CLASS_DISPLAY){
+                        std::ifstream device_vendor((device_path+"vendor").c_str());
+                        std::ifstream device_device((device_path+"device").c_str());
+                        std::string v;
+                        std::string d;
+                        std::getline(device_vendor, v);
+                        std::getline(device_device, d);
+                        devices.push_back(getDevice(v.substr(2), d.substr(2)));
+                    }
+                }
+            }
+            closedir(dir);
+            return devices;
         }
 
     public:
@@ -65,7 +114,8 @@ struct ff_sysinfo {
             {"Host",        "err"},
             {"CPU",         "err"},
             {"Packages",    "err"},
-            {"Uptime",      "err"}
+            {"Uptime",      "err"},
+            {"GPU",         "err"}
         };
 
         std::map<std::string, int> bars = {
@@ -74,7 +124,8 @@ struct ff_sysinfo {
         };
 
         ff_sysinfo(ini *config) {
-            std::string cpu_module = _getAttribFromRaw("/proc/cpuinfo", "model name", ':');
+
+            std::string cpu_module = getAttribFromRaw("/proc/cpuinfo", "model name", ':');
             rplc(&cpu_module, "(R)", "");
             rplc(&cpu_module, "(r)", "");
             rplc(&cpu_module, "(TM)", "");
@@ -85,11 +136,14 @@ struct ff_sysinfo {
             mfreq(&cpu_module);
             trim(&cpu_module);
 
+            std::vector<std::string> v_gpu = (std::vector<std::string>)getDisplayDevices();
+
             uname(&un);
             this->modules["Kernel"] = this->un.release;
             this->modules["Host"] = this->un.nodename;
             this->modules["CPU"] = cpu_module;
             this->modules["Packages"] = npackages(config->modules["pkgcache"]);
+            this->modules["GPU"] = v_gpu[0]; // Temporal 1
 
             sysinfo(&sinf);
             this->modules["Uptime"] = parseSeconds(sinf.uptime);

@@ -3,7 +3,6 @@
  *  By Capuno, GPLv3
  *  #include <map> // required
  *  #include <fstream> // required
- *  #include <fstream> // required
  */
 
 #include <string>
