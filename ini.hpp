@@ -27,7 +27,8 @@ class ini {
             return *p == 0;
         }
 
-        void _setSysLayout(const std::string &s, char sep, std::vector<std::string> *sys_modules) {
+        void setSysLayout(std::string s, char sep, std::vector<std::string> *sys_modules) {
+            rplc(&s, " ", "");
             std::stringstream modules(s);
             std::string module;
             while (std::getline(modules, module, sep)) {
@@ -151,7 +152,7 @@ class ini {
                     }
                     buffer.clear();
                     _getValueFromRaw("bars","order",&buffer);
-                    _setSysLayout(!buffer.empty() ? buffer : std::string("disk,palette"), ',', &this->bar_modules);
+                    setSysLayout(!buffer.empty() ? buffer : std::string("disk,palette"), ',', &this->bar_modules);
                     buffer.clear();
                     _getValueFromRaw("bars","pw",&buffer);
                     if (!buffer.empty() && _isInteger(buffer)) {
@@ -209,7 +210,7 @@ class ini {
                     }
                     buffer.clear();
                     _getValueFromRaw("modules","order",&buffer);
-                    _setSysLayout(!buffer.empty() ? buffer : std::string("Host,Kernel,CPU"), ',', &this->sys_modules);
+                    setSysLayout(!buffer.empty() ? buffer : std::string("Host,Kernel,CPU"), ',', &this->sys_modules);
                     buffer.clear();
                     _getValueFromRaw("custom","art",&buffer);
                     if (!buffer.empty()) {
@@ -247,8 +248,8 @@ class ini {
                     }
                 }
             } else {
-                _setSysLayout(std::string("Host,Kernel,CPU,Packages"), ',', &this->sys_modules);
-                _setSysLayout(std::string("disk,palette"), ',', &this->bar_modules);
+                setSysLayout(std::string("Host,Kernel,CPU,Packages"), ',', &this->sys_modules);
+                setSysLayout(std::string("disk,palette"), ',', &this->bar_modules);
                 for (auto const &c : this->colors) {
                     this->colors[c.first] = parseColors(c.second);
                 }
