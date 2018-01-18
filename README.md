@@ -39,6 +39,18 @@ In the example file settings.ini you have every available config with it's descr
 {RED}This is red text. {BOLD}{YELLOW} This is yellow bold text.{RESET} Back to normal.
 ```
 
+Current list of working modules:
+
+```
+Kernel,Host,CPU,Packages,Uptime
+```
+
+Current list of working bars:
+
+```
+disk,ram,palette
+```
+
 ## TODO
 
 * Improve **Customization** section.
@@ -46,6 +58,8 @@ In the example file settings.ini you have every available config with it's descr
 * Make more system info modules.
 * Improve the cache file to hold different things.
 * Make the bar label inside the actual bar, that would look cool.
+* Text and bar colors inside settings file.
+* Move rplc and other functions to another header.
 
 <div align="center">
 	<i>Pokémon, Pokémon character names, Nintendo 3DS, Nintendo DS, Wii, Wii U, and Wiiware are trademarks of Nintendo.</i>

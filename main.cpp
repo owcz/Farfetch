@@ -4,6 +4,8 @@
 #include <map>
 
 #include "colors.hpp"
+#include "utils.hpp"
+
 #include "ini.hpp"
 #include "sys.hpp"
 
@@ -37,18 +39,9 @@ void moveCursor(int x, int y) {
     std::cout << (x > 0 ? xs.str() : "") << (y > 0 ? ys.str() : "");
 }
 
-void rplc(std::string *s, const std::string &obj, const std::string &subs) {
-    for(int i = 0; ; i += subs.length()) {
-        i = s->find(obj, i);
-        if(i == std::string::npos) break;
-        s->erase(i, obj.length());
-        s->insert(i, subs);
-    }
-}
-
-std::string mkBar(int barWidth, int percentage) {
-    int used = barWidth * percentage / 100;
-    return std::string(BAR_USED)+std::string(used,' ')+BAR_FREE+std::string(barWidth-used,' ')+RESET;
+std::string mkBar(int percentage, ini *config) {
+    int used = config->bars.width * percentage / 100;
+    return std::string(config->colors["used"])+std::string(used,' ')+config->colors["free"]+std::string(config->bars.width-used,' ')+RESET;
 }
 
 std::string buildBars(ff_sysinfo *sys, ini *config) {
@@ -57,7 +50,7 @@ std::string buildBars(ff_sysinfo *sys, ini *config) {
     std::string s(config->palette_spaces, ' ');
     for( std::string bar : config->bar_modules ) {
         if (sys->bars.find(bar) != sys->bars.end()) {
-            body << n + mkBar(config->bars.width, sys->bars[bar]) + RESET TEXT_NORMAL + " " + config->bars.label[bar];
+            body << n + mkBar(sys->bars[bar], config) + RESET + config->colors["normal"] + " " + config->bars.label[bar];
             n = "\n";
         } else if (bar == "palette") {
             body << n+"\033[40m"+s+"\033[41m"+s+"\033[42m"+s+"\033[43m"+s+"\033[44m"+s+"\033[45m"+s+"\033[46m"+s+"\033[47m"+RESET;
@@ -72,7 +65,7 @@ std::string buildSys(ff_sysinfo *sys, ini *config) {
     std::string n = "";
     for( std::string m : config->sys_modules ) {
         if (sys->modules.find(m) != sys->modules.end()) {
-            body << n + TEXT_TITLE + m + ": " + TEXT_NORMAL + sys->modules[m] + RESET;
+            body << n + config->colors["title"] + m + ": " + RESET + config->colors["normal"] + sys->modules[m] + RESET;
             n = "\n";
         }
     }
@@ -85,17 +78,9 @@ std::string buildAscii(std::string asciiPath, ini *config) {
     std::stringstream rawstream(std::string((std::istreambuf_iterator<char>(in)), std::istreambuf_iterator<char>()).c_str());
     std::string line;
     while(std::getline(rawstream,line,'\n')) {
-        os << std::string(config->offsets.x, ' ') + line + "\n";
+        os << std::string(config->offsets.x, ' ') + RESET + line + RESET + "\n";
     }
-    std::string output = os.str();
-    rplc(&output,"{RESET}",RESET);
-    rplc(&output,"{BOLD}",BOLD);
-    rplc(&output,"{DIM}",DIM);
-    rplc(&output,"{RED}",RED);
-    rplc(&output,"{GREEN}",GREEN);
-    rplc(&output,"{YELLOW}",YELLOW);
-    rplc(&output,"{BLUE}",BLUE);
-    rplc(&output,"{MAGENTA}",MAGENTA);
+    std::string output = parseColors(os.str());
     while (nLines(output) < config->offsets.sy+config->sys_modules.size() && nLines(output) < config->offsets.by+config->bar_modules.size() ) {
         output += '\n';
     }
@@ -104,19 +89,11 @@ std::string buildAscii(std::string asciiPath, ini *config) {
 
 std::string buildHeader(ff_sysinfo *sys, ini *config) {
     std::string header = config->m_header;
-    rplc(&header,"{RESET}",RESET);
-    rplc(&header,"{BOLD}",BOLD);
-    rplc(&header,"{DIM}",DIM);
-    rplc(&header,"{RED}",RED);
-    rplc(&header,"{GREEN}",GREEN);
-    rplc(&header,"{YELLOW}",YELLOW);
-    rplc(&header,"{BLUE}",BLUE);
-    rplc(&header,"{MAGENTA}",MAGENTA);
     rplc(&header,"{CPU}",sys->modules["CPU"]);
     rplc(&header,"{HOSTNAME}",sys->modules["Host"]);
     rplc(&header,"{KERNEL}",sys->modules["Kernel"]);
     rplc(&header,"{PACKAGES}",sys->modules["Packages"]);
-    return header;
+    return parseColors(header);
 }
 
 int main(int argc, char const *argv[]) {
@@ -146,7 +123,7 @@ int main(int argc, char const *argv[]) {
     std::string line;
     while(std::getline(sys_bs,line)) {
         moveCursor(0, config.offsets.sx);
-        std::cout << line << std::endl;
+        std::cout << RESET << line << RESET << std::endl;
         top_l = ++l > top_l ? l : top_l;
     }
 
@@ -163,7 +140,7 @@ int main(int argc, char const *argv[]) {
 
     moveCursor(l - config.offsets.hy, config.offsets.hx);
     l = config.offsets.hy;
-    std::cout << buildHeader(&sys, &config) << RESET << std::endl;
+    std::cout << RESET << buildHeader(&sys, &config) << RESET << std::endl;
 
     int toBottom = asc_l > top_l ? asc_l-1 : top_l;
     while(l<=toBottom-3) { // Don't ask me why sub 3

@@ -1,6 +1,6 @@
 #include <sys/utsname.h>
 #include <sys/statvfs.h>
-#include <sys/sysinfo.h>//ram bar and uptime module WIP
+#include <sys/sysinfo.h>
 #include <sys/stat.h>
 #include <time.h>
 
@@ -10,14 +10,6 @@ struct ff_sysinfo {
         struct utsname un;
         struct statvfs dsk;
         struct sysinfo sinf;
-        void rplc(std::string *s, const std::string &obj, const std::string &subs) {
-            for(int i = 0; ; i += subs.length()) {
-                i = s->find(obj, i);
-                if(i == std::string::npos) break;
-                s->erase(i, obj.length());
-                s->insert(i, subs);
-            }
-        }
         void trim(std::string *str) {
             while (str->find("  ") != std::string::npos) {
                 rplc(str, "  ", " ");

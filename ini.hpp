@@ -104,6 +104,13 @@ class ini {
             {"pkgcache",        false}
         };
 
+        std::map<std::string, std::string> colors = {
+            {"title",   "{BOLD}"},
+            {"normal",  ""},
+            {"used",    "{BG_WHITE}"},
+            {"free",    "{BG_GRAY}"}
+        };
+
         std::string m_asciiart;
         std::string m_header;
 
@@ -216,11 +223,37 @@ class ini {
                         this->m_header = buffer;
                     }
                     buffer.clear();
+                    _getValueFromRaw("custom","text_title",&buffer);
+                    if (!buffer.empty()) {
+                        this->colors["title"] = buffer;
+                    }
+                    buffer.clear();
+                    _getValueFromRaw("custom","text_normal",&buffer);
+                    if (!buffer.empty()) {
+                        this->colors["normal"] = buffer;
+                    }
+                    buffer.clear();
+                    _getValueFromRaw("custom","bar_used",&buffer);
+                    if (!buffer.empty()) {
+                        this->colors["used"] = buffer;
+                    }
+                    buffer.clear();
+                    _getValueFromRaw("custom","bar_free",&buffer);
+                    if (!buffer.empty()) {
+                        this->colors["free"] = buffer;
+                    }
+                    buffer.clear();
 
+                    for (auto const &c : this->colors) {
+                        this->colors[c.first] = parseColors(c.second);
+                    }
                 }
             } else {
                 _setSysLayout(std::string("Host,Kernel,CPU,Packages"), ',', &this->sys_modules);
                 _setSysLayout(std::string("disk,palette"), ',', &this->bar_modules);
+                for (auto const &c : this->colors) {
+                    this->colors[c.first] = parseColors(c.second);
+                }
             }
 
         }
