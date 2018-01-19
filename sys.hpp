@@ -124,6 +124,7 @@ struct ff_sysinfo {
         std::map<const std::string, std::string> modules = {
             {"Kernel",      "err"},
             {"Host",        "err"},
+            {"User",        "err"},
             {"CPU",         "err"},
             {"Packages",    "err"},
             {"Uptime",      "err"},
@@ -158,6 +159,10 @@ struct ff_sysinfo {
                 }
             }
 
+            char *username;
+            username=(char *)malloc(10*sizeof(char));
+            username=getlogin();
+
             std::string cpu_module = getAttribFromRaw("/proc/cpuinfo", "model name", ':');
             rplc(&cpu_module, "(R)", "");
             rplc(&cpu_module, "(r)", "");
@@ -177,7 +182,8 @@ struct ff_sysinfo {
             this->modules["Host"] = this->un.nodename;
             this->modules["CPU"] = cpu_module;
             this->modules["Packages"] = npackages(config->modules["pkgcache"]);
-            this->modules["GPU"] = v_gpu[0]; // Temporal 1
+            this->modules["GPU"] = v_gpu[0]; // Temporal first, TODO, multiple GPUs
+            this->modules["User"] = username;
 
             sysinfo(&sinf);
             this->modules["Uptime"] = parseSeconds(sinf.uptime);
@@ -187,5 +193,6 @@ struct ff_sysinfo {
             this->bars["disk"] = 100 - (unsigned long)this->dsk.f_bavail * 100 / (unsigned long)this->dsk.f_blocks;
             unsigned long cachedram = getCachedRam(sinf.mem_unit);
             this->bars["ram"] = 100 - (uint64_t)(sinf.freeram+sinf.bufferram+cachedram) * 100 / (uint64_t)(sinf.totalram + sinf.totalswap);
+
         }
 };
