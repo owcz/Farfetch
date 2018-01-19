@@ -6,20 +6,16 @@
 
 # Installation
 
-To compile the binary, use `make`, after that, the binary (located in build/ff) will need a config file and an ascii file, inside the build folder there are already example files for that, if you wish, you can move this files inside ~/.config/farfetch/ and then alias a command to run the binary with the config location.
+To compile the binary, use `make`, then, use `make install`, this command will move the main settings.ini default file into ~/.config/farfetch/settings.ini (it won't overwrite it) and all the ascii files inside ~/.config/farfetch/ascii/* , it will also make a ~/bin folder if it didn't exist and add `export PATH=$PATH:$HOME/bin` into your .bashrc.
 
 ```bash
 make
-mkdir -p ~/.config/farfetch/ascii ~/bin
-cp build/settings.ini ~/.config/farfetch/
-cp build/ascii/* ~/.config/farfetch/ascii
-cp build/ff ~/bin/
-echo 'alias ff="~/bin/ff /home/$USER/.config/farfetch/settings.ini"' >> ~/.bashrc
+make install
 ```
 
-Then, if you want another ascii rather than the skeleton example, edit ~/.config/farfetch/settings.ini and change the section art, inside [custom] with the name of the ascii file, the script will search this ascii file in the same directory as the settings.ini or, if specified, in the full path of the file.
+Then, if you want another ascii rather than the skeleton example, edit ~/.config/farfetch/settings.ini and change the section art (or make a new one), inside [custom] with the name of the ascii file, the script will search this ascii file in the same directory as the settings.ini or, if specified, in the full path of the file.
 
-Refer to section **Customization** if you want to learn more about the settings and ascii configurations.
+*Refer to section **Customization** if you want to learn more about the settings and ascii configurations.*
 
 # Usage
 
@@ -28,6 +24,13 @@ The usage is simple, it just needs one argument, the config file absolute or rel
 ```bash
 ff .config/farfetch/settings.ini
 ff /home/$USER/.config/farfetch/settings.ini
+```
+
+You can alias this command inside your .bashrc if you want, or put it at the end so it shows up every time you open a terminal:
+
+```bash
+alias ff='ff ~/.config/farfetch/settings.ini'
+ff
 ```
 
 # Customization
@@ -62,7 +65,8 @@ disk,ram,palette
 ## TODO
 
 * Improve **Customization** section.
-* make install.
+* Add ascii wiki page.
+* ~~make install.~~
 * **WIP** ~~Make more system info modules.~~
 * Improve the cache file to hold different things.
 * Make the bar label inside the actual bar, that would look cool.
