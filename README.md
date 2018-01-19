@@ -50,7 +50,7 @@ In the example file settings.ini you have every available config with it's descr
 Current list of working modules:
 
 ```
-Kernel,Host,CPU,Packages,Uptime,GPU
+Kernel,Host,CPU,Packages,Uptime,GPU,Processes
 ```
 *GPU is experimental, if it's not working in your system, please open an issue with your `locate pci.ids` output*
 
