@@ -71,11 +71,6 @@ class ini {
             }
         }
 
-        bool _configExists() {
-            std::ifstream config(this->inifile);
-            return config.good();
-        }
-
     public:
 
         struct bar {
@@ -124,7 +119,7 @@ class ini {
 
                 this->inifile = *inifile;
 
-                if (!_configExists()) {
+                if (!fileExists(this->inifile.c_str())) {
                     std::string err_log = "Config file " + this->inifile + " does not exist!";
                     throw std::runtime_error(err_log.c_str());
                 } else {

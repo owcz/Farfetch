@@ -106,6 +106,24 @@ struct ff_sysinfo {
             closedir(dir);
             return devices;
         }
+        std::string getDistro() {
+            std::string distro;
+            std::string fallback;
+            if (fileExists("/etc/os-release")) {
+                std::ifstream release("/etc/os-release");
+                std::string line;
+                while (std::getline(release, line) && !line.empty()) {
+                    if (line.substr(0,line.find('=')) == "PRETTY_NAME") {
+                        distro = line.substr(line.find('=')+1);
+                        rplc(&distro,"\"", "");
+                    } else if (line.substr(0,line.find('=')) == "NAME") {
+                        fallback = line.substr(line.find('=')+1);
+                        rplc(&fallback,"\"", "");
+                    }
+                }
+            }
+            return distro.empty() ? fallback : distro;
+        }
         unsigned long getCachedRam(int mem_unit) {
             std::ifstream meminfo("/proc/meminfo");
             std::string line;
@@ -129,7 +147,8 @@ struct ff_sysinfo {
             {"Packages",    "err"},
             {"Uptime",      "err"},
             {"GPU",         "err"},
-            {"Processes",   "err"}
+            {"Processes",   "err"},
+            {"Distro",      "err"}
         };
 
         std::map<std::string, int> bars = {
@@ -184,6 +203,7 @@ struct ff_sysinfo {
             this->modules["Packages"] = npackages(config->modules["pkgcache"]);
             this->modules["GPU"] = v_gpu[0]; // Temporal first, TODO, multiple GPUs
             this->modules["User"] = username;
+            this->modules["Distro"] = getDistro();
 
             sysinfo(&sinf);
             this->modules["Uptime"] = parseSeconds(sinf.uptime);

@@ -9,6 +9,11 @@ void rplc(std::string *s, const std::string &obj, const std::string &subs) {
     }
 }
 
+bool fileExists(const char* path) {
+    std::ifstream file(path);
+    return file.good();
+}
+
 std::string parseColors(std::string output) {
     rplc(&output,"{RESET}",RESET);
     rplc(&output,"{BOLD}",BOLD);

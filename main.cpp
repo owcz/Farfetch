@@ -94,6 +94,7 @@ std::string buildHeader(ff_sysinfo *sys, ini *config) {
     rplc(&header,"{GPU}",sys->modules["GPU"]);
     rplc(&header,"{USER}",sys->modules["User"]);
     rplc(&header,"{UPTIME}",sys->modules["Uptime"]);
+    rplc(&header,"{DISTRO}",sys->modules["Distro"]);
     rplc(&header,"{HOSTNAME}",sys->modules["Host"]);
     rplc(&header,"{KERNEL}",sys->modules["Kernel"]);
     rplc(&header,"{PACKAGES}",sys->modules["Packages"]);

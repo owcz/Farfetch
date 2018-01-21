@@ -50,7 +50,7 @@ In the example file settings.ini you have every available config with it's descr
 Current list of working modules:
 
 ```
-Kernel,Host,CPU,Packages,Uptime,GPU,Processes,User
+Kernel,Host,CPU,Packages,Uptime,GPU,Processes,User,Distro
 ```
 *GPU is experimental, if it's not working in your system, please open an issue with your `locate pci.ids` output*
 
@@ -64,6 +64,7 @@ disk,ram,palette
 
 ## TODO
 
+* Check if sys.ini variables are enabled in the config before initialising them.
 * Improve **Customization** section.
 * Add ascii wiki page.
 * ~~make install.~~
