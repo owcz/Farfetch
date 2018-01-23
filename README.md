@@ -70,7 +70,7 @@ disk,ram,palette
 * ~~make install.~~
 * **WIP** ~~Make more system info modules.~~
 * Improve the cache file to hold different things.
-* Make the bar label inside the actual bar, that would look cool.
+* ~~Make the bar label inside the actual bar, that would look cool.~~
 * **WIP** ~~Move rplc and other functions to another header.~~
 
 <div align="center">

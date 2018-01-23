@@ -121,7 +121,7 @@ struct ff_sysinfo {
                         rplc(&fallback,"\"", "");
                     }
                 }
-            }
+            } // TODO else if other *-release file or different methods
             return distro.empty() ? fallback : distro;
         }
         unsigned long getCachedRam(int mem_unit) {

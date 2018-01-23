@@ -5,6 +5,7 @@
 #define BOLD "\033[1m"
 #define DIM "\033[2m"
 
+#define BLACK "\033[30m"
 #define RED "\033[31m"
 #define GREEN "\033[32m"
 #define YELLOW "\033[33m"
@@ -14,6 +15,7 @@
 #define GRAY "\033[37m"
 #define WHITE "\033[39m"
 
+#define BG_BLACK "\033[40m"
 #define BG_RED "\033[41m"
 #define BG_GREEN "\033[42m"
 #define BG_YELLOW "\033[43m"

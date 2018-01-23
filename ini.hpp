@@ -77,8 +77,8 @@ class ini {
             int width = 28;
             std::string disk = "/home";
             std::map<std::string, std::string> label = {
-                {"disk",    "/home"},
-                {"ram",     "RAM"}
+                {"disk",    ""},
+                {"ram",     ""}
             };
         } bars;
 
@@ -102,7 +102,9 @@ class ini {
             {"title",   "{BOLD}"},
             {"normal",  ""},
             {"used",    "{BG_WHITE}"},
-            {"free",    "{BG_GRAY}"}
+            {"free",    "{BG_GRAY}"},
+            {"t_used",    "{GRAY}"},
+            {"t_free",    "{WHITE}"}
         };
 
         std::string m_asciiart;
@@ -237,17 +239,23 @@ class ini {
                         this->colors["free"] = buffer;
                     }
                     buffer.clear();
-
-                    for (auto const &c : this->colors) {
-                        this->colors[c.first] = parseColors(c.second);
+                    split("custom","bar_used_text",&buffer);
+                    if (!buffer.empty()) {
+                        this->colors["t_used"] = buffer;
                     }
+                    buffer.clear();
+                    split("custom","bar_free_text",&buffer);
+                    if (!buffer.empty()) {
+                        this->colors["t_free"] = buffer;
+                    }
+                    buffer.clear();
                 }
             } else {
                 setSysLayout(std::string("Host,Kernel,CPU,Packages"), ',', &this->sys_modules);
                 setSysLayout(std::string("disk,palette"), ',', &this->bar_modules);
-                for (auto const &c : this->colors) {
-                    this->colors[c.first] = parseColors(c.second);
-                }
+            }
+            for (auto const &c : this->colors) {
+                this->colors[c.first] = parseColors(c.second);
             }
 
         }

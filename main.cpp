@@ -40,9 +40,15 @@ void moveCursor(int x, int y) {
     std::cout << (x > 0 ? xs.str() : "") << (y > 0 ? ys.str() : "");
 }
 
-std::string mkBar(int percentage, ini *config) {
+std::string mkBar(int percentage, ini *config, std::string label) {
     int used = config->bars.width * percentage / 100;
-    return std::string(config->colors["used"])+std::string(used,' ')+config->colors["free"]+std::string(config->bars.width-used,' ')+RESET;
+    std::string cLabel[2] = {"", ""};
+    cLabel[0] = used < label.length() ? label.substr(0, used) : label;
+    cLabel[1] = used < label.length() ? label.substr(used) : "";
+    used = used >= label.length() ? used - label.length() : 0;
+    std::string usedBar = config->colors["used"]+config->colors["t_used"]+cLabel[0]+std::string(used,' ');
+    std::string freeBar = config->colors["free"]+config->colors["t_free"]+cLabel[1]+std::string(config->bars.width-used-label.length(),' ');
+    return usedBar + freeBar;
 }
 
 std::string buildBars(ff_sysinfo *sys, ini *config) {
@@ -51,7 +57,7 @@ std::string buildBars(ff_sysinfo *sys, ini *config) {
     std::string s(config->palette_spaces, ' ');
     for( std::string bar : config->bar_modules ) {
         if (sys->bars.find(bar) != sys->bars.end()) {
-            body << n + mkBar(sys->bars[bar], config) + RESET + config->colors["normal"] + " " + config->bars.label[bar];
+            body << n + mkBar(sys->bars[bar], config, config->bars.label[bar]) + RESET;
             n = "\n";
         } else if (bar == "palette") {
             body << n+"\033[40m"+s+"\033[41m"+s+"\033[42m"+s+"\033[43m"+s+"\033[44m"+s+"\033[45m"+s+"\033[46m"+s+"\033[47m"+RESET;
