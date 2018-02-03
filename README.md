@@ -19,10 +19,10 @@ Then, if you want another ascii rather than the skeleton example, edit ~/.config
 
 # Usage
 
-The usage is simple, it just needs one argument, the config file absolute or relative path, examples:
+The usage is simple, it just needs one argument, the config file absolute path, examples:
 
 ```bash
-ff .config/farfetch/settings.ini
+ff ~/.config/farfetch/settings.ini
 ff /home/$USER/.config/farfetch/settings.ini
 ```
 
