@@ -1,7 +1,7 @@
 ![header](https://u.teknik.io/hh5Tl.png)
 
 <div align=center>
-	<b>Farfetch</b> is a free, open source, easily configurable system fetcher, far faster than it's competitors.
+	<b>Farfetch</b> is a free, open source, easily configurable system fetcher, far faster than its competitors.
 </div>
 
 # Installation
